@@ -51,7 +51,7 @@ CREATE TABLE Keyword (
 );
 
 CREATE TABLE Comment (
-	comment_id INT PRIMARY KEY NOT NULL
+	comment_id INT PRIMARY KEY NOT NULL,
 	comment VARCHAR(512),
 	pid INT,
 	cid INT,
@@ -66,7 +66,7 @@ CREATE TABLE Comment (
 CREATE TABLE Membership (
 	sid VARCHAR(30) NOT NULL,
 	cid INT NOT NULL,
-	role ENUM('member','president','teasurer') -- What are possible roles? There's 3
+	role ENUM('member','president','teasurer'), -- What are possible roles? There's 3
 	PRIMARY KEY(sid, cid),
 	FOREIGN KEY(sid) REFERENCES Student(sid),
 	FOREIGN KEY(cid) REFERENCES Club(cid)

@@ -6,122 +6,84 @@
 
 -- #2 CREATE TABLE STATEMENTS
 
-create table Person (
-	pid varchar(30) not null unique,
-	passwd char(32) not null,
-	fname varchar(15),
-	lname varchar(15),
-	email varchar(32),
-	role enum,
-	primary key(pid)
+CREATE TABLE Person (
+	pid VARCHAR(30) PRIMARY KEY NOT NULL,
+	passwd CHAR(32) NOT NULL,
+	fname VARCHAR(32),
+	lname VARCHAR(32),
+	email VARCHAR(64),
+	role ENUM('student', 'advisor') NOT NULL,
 );
 
-create table Advisor (
-	pid varchar(30) not null unique,
-	phone char(12),
-	foreign key(pid) references Person(pid)
+CREATE TABLE Advisor (
+	aid VARCHAR(30) NOT NULL,
+	phone CHAR(12),
+	FOREIGN KEY(aid) REFERENCES Person(pid)
 );
 
-create table Student (
-	pid varchar(30) not null unique,
-	gender char(1),
-	class varchar(10),
-	foreign key(pid) references Person(pid)
+CREATE TABLE Student (
+	sid VARCHAR(30) NOT NULL,
+	gender ENUM('M', 'F', 'O'),
+	class VARCHAR(30),
+	FOREIGN KEY(sid) REFERENCES Person(pid)
 );
 
-create table Club (
-	clubid varchar(30) not null unique,
-	cname varchar(15),
-	descr varchar(512),
-	primary key(clubid)
+CREATE TABLE Club (
+	cid INT PRIMARY KEY NOT NULL,
+	cname VARCHAR(32),
+	description VARCHAR(512),
+	aid VARCHAR(30) NOT NULL,
+	FOREIGN KEY(aid) REFERENCES Advisor(aid)
 );
 
-create table Event (
-	eid varchar(30) not null unique,
-	ename varchar(15),
-	description varchar(512),
-	edatetime DATETIME,
-	location,
-	is_public_e Boolean,
-	primary key(eid)
+CREATE TABLE Event (
+	eid INT PRIMARY KEY NOT NULL,
+	ename VARCHAR(32),
+	description VARCHAR(512), 
+	datetime DATETIME,
+	location VARCHAR(512),
+	public BOOLEAN DEFAULT FALSE,
 );
 
-
-create table keywords (
-	topic varchar(512)
+CREATE TABLE Keyword (
+	kid INT PRIMARY KEY NOT NULL,
+	topic VARCHAR(32)
 );
 
-create table comment (
-	comment_id varchar(30) not null unique,
-	ctext varchar(512),
-	is_public_e Boolean,
-	primary key(comment_id),
-	foreign key(is_public_id) references Event(is_public_e)
+CREATE TABLE Comment (
+	comment_id INT PRIMARY KEY NOT NULL
+	comment VARCHAR(512),
+	cid INT,
+	eid INT,
+	public BOOLEAN DEFAULT FALSE,
+	FOREIGN KEY(cid) REFERENCES Club(id),
+	FOREIGN KEY(eid) REFERENCES Event(id),
+	FOREIGN KEY(public) REFERENCES Event(public)
 );
 
+CREATE TABLE Membership (
+	sid VARCHAR(30) NOT NULL,
+	cid INT NOT NULL,
+	role ENUM('','','') -- What are possible roles?
+	PRIMARY KEY(sid, cid),
+	FOREIGN KEY(sid) REFERENCES Student(sid),
+	FOREIGN KEY(cid) REFERENCES Club(cid)
+);	
 
-create table advisor_of (
-	pid varchar(30) not null,
-	clubid varchar(30) not null,
-	primary key(pid, clubid),
-	foreign key(pid) references Advisor(pid),
-	foreign key(clubid) references Club(clubid)
+CREATE TABLE Sponsors (
+	eid INT NOT NULL,
+	cid INT NOT NULL,
+	PRIMARY KEY(eid, cid),
+	FOREIGN KEY(eid) REFERENCES Event(eid),
+	FOREIGN KEY(cid) REFERENCES Comment(cid)
 );
 
-create table member_of (
-	pid varchar(30) not null,
-	clubid varchar(30) not null,
-	role varchar (15),		-- NEEDS TO BE MULTI-VALUE
-	primary key(pid, clubid),
-	foreign key(pid) references Student(pid),
-	foreign key(clubid) references Club(cludid)
-);
-
-create table sponsored_by (
-	eid varchar(30) not null,
-	clubid varchar(30) not null,
-	primary key(eid, clubid),
-	foreign key(eid) references Event(eid),
-	foreign key(clubid) references Club(clubid)
-);
-
-create table club_topics (
-	clubid varchar(30) not null,
-	keywords varchar(512),		-- NOT SURE HOW TO REPRESENT THIS (NOT PRIMARY)
-	primary key(clubid),
-	foreign key(clubid) references Club(clubid)
-);
-
-create table interested_in (
-	pid varchar(30) not null,
-	topic varchar(512),
-	primary key(pid, topic),
-	foreign key(pid) references Person(pid),
-	foreign key(topic) references keywords(topic)
-);
-
-create table about_club (
-	clubid varchar(30) not null,
-	comment_id varchar(30) not null,
-	primary key(clubid, comment_id),
-	foreign key(clubid) references Club(clubid),
-	foreign key(comment_id) references comment(comment_id)
-);
-
-create table about_event (
-	eid varchar(30) not null,
-	comment_id varchar(30) not null,
-	primary key(eid, comment_id),
-	foreign key(clubid) references Event(eid),
-	foreign key(comment_id) references comment(comment_id)
-);
-
-create table sign_up (
-	pid varchar(30) not null,
-	eid varchar(30) not null,
-	primary key(pid, eid),
-	foreign(pid) references Person(pid),
-	foreign(eid) references Event(eid)
+CREATE TABLE Event_Attendees (
+	pid VARCHAR(30) NOT NULL,
+	eid VARCHAR(30) NOT NULL,
+	PRIMARY KEY(pid, eid),
+	FOREIGN KEY(pid) REFERENCES Person(pid),
+	FOREIGN KEY(eid) REFERENCES Event(eid)
 );
 
 

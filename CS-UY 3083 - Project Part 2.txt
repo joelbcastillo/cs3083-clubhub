@@ -90,17 +90,10 @@ CREATE TABLE Event_Attendees (
 -- #3 INSERT STATEMENTS
 
 -- (a)
-insert into Advisor
-values('Ann')
-insert into Advisor
-values('Bob')
 insert into Club
-values('1','Frisbee Club', 'Toss aerodynamics disks!'); -- HOW DO YOU SPECIFY THE ADVISOR
+values('1','Frisbee Club', 'Toss aerodynamics disks!', 'Ann');
 insert into Club
-values('2','Theater Club', 'Time to Perform!'); -- HOW DO YOU SPECIFY THE ADVISOR
-insert into advisor_of
-values('Ann', '1')
-insert into advisor_of
-values('Bob', '2')
+values('2','Theater Club', 'Time to Perform!', 'Bob');
+
 
 -- (b)

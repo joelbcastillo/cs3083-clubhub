@@ -12,7 +12,7 @@ CREATE TABLE Person (
 	fname VARCHAR(32),
 	lname VARCHAR(32),
 	email VARCHAR(64),
-	role ENUM('student', 'advisor') NOT NULL,
+	role ENUM('student', 'advisor') NOT NULL
 );
 
 CREATE TABLE Advisor (
@@ -42,7 +42,7 @@ CREATE TABLE Event (
 	description VARCHAR(512), 
 	datetime DATETIME,
 	location VARCHAR(512),
-	public BOOLEAN DEFAULT FALSE,
+	public BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE Keyword (
@@ -53,9 +53,11 @@ CREATE TABLE Keyword (
 CREATE TABLE Comment (
 	comment_id INT PRIMARY KEY NOT NULL
 	comment VARCHAR(512),
+	pid INT,
 	cid INT,
 	eid INT,
 	public BOOLEAN DEFAULT FALSE,
+	FOREIGN KEY(pid) REFERENCES Person(id),
 	FOREIGN KEY(cid) REFERENCES Club(id),
 	FOREIGN KEY(eid) REFERENCES Event(id),
 	FOREIGN KEY(public) REFERENCES Event(public)
@@ -64,7 +66,7 @@ CREATE TABLE Comment (
 CREATE TABLE Membership (
 	sid VARCHAR(30) NOT NULL,
 	cid INT NOT NULL,
-	role ENUM('','','') -- What are possible roles?
+	role ENUM('member','president','teasurer') -- What are possible roles? There's 3
 	PRIMARY KEY(sid, cid),
 	FOREIGN KEY(sid) REFERENCES Student(sid),
 	FOREIGN KEY(cid) REFERENCES Club(cid)
@@ -97,3 +99,57 @@ values('2','Theater Club', 'Time to Perform!', 'Bob');
 
 
 -- (b)
+INSERT INTO Person
+VALUES('Pedro', MD5('Pedro'), 'Pedro', 'Pedro', 'Pedro@email.com')
+INSERT INTO Person
+VALUES('Phil', MD5('Phil'), 'Phil', 'Phil', 'Pedro@email.com')
+INSERT INTO Person
+VALUES ('Ann', md5('Ann'), 'Ann', 'Ann', 'Ann@email.com')
+INSERT INTO Person
+VALUES ('Bob', md5('Bob'), 'Bob', 'Bob', 'Bob@email.com')
+INSERT INTO Membership
+VALUES('Pedro','1', member)
+INSERT INTO Membership
+VALUES('Pedro','2', president)
+INSERT INTO Membership
+VALUES('Phil','1', president)
+
+-- (c)
+-- How do you reprsent this relationship?
+
+-- (d)
+INSERT INTO Event
+VALUES('E1', 'Tossing Competition', 'Fun', 'March 30th, 2015', 'Central Park', TRUE)
+INSERT INTO Event
+VALUES('E2', 'Comedy', 'Fun', 'March 28th, 2015', 'NYU', FALSE)
+INSERT INTO Event
+VALUES('E3', 'Drama', 'Fun', 'March 20th, 2015', 'Princeton', TRUE)
+-- CHECK DATETIME SYNTAX
+INSERT INTO Sponsors
+VALUES('E1','1')
+INSERT INTO Sponsors
+VALUES('E2','2')
+INSERT INTO Sponsors
+VALUES('E3','2')
+
+-- (e)
+INSERT INTO Attendees
+VALUES('E2', 'Pedro')
+INSERT INTO Attendees
+VALUES('E1', 'Pedro')
+INSERT INTO Attendees
+VALUES('E1', 'PHil')
+INSERT INTO Attendees
+VALUES('E3', 'PHil')
+
+-- (f)
+INSERT INTO Comment
+VALUES('1', 'Amazing Club', 'Pedro', '2', 'E2', FALSE)
+INSERT INTO Comment
+VALUES('2', 'Gets better!', 'Pedro', '2', 'E2', TRUE)
+INSERT INTO Comment
+VALUES('1', 'Fun!', '1', 'Phil', 'E2', FALSE)
+
+-- (g) and (h) ADMINISTRATIVE
+
+-- #4

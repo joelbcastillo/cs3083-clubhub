@@ -173,6 +173,10 @@ where P.pid = EA.pid and S.cid = '2'
 group by Event
 
 -- (e)
-select E.public, M.sid -- THIS SHOULD RETURN A BOOLEAN FOR THE PEDRO PART
-from Event as E, Membership as M, Club as C
-where E.eid = 'E3' or (M.sid = 'Pedro' and M.cid = C.cid)
+select case when exists (
+	select *
+	from Event as E, Membership as M, Club as C
+	where E.eid = 'E3'or (M.sid = 'Pedro' and M.cid = C.cid)
+)
+then cast(1 as bit)
+else cast(0 as bit) end

@@ -133,13 +133,13 @@ INSERT INTO Sponsors
 VALUES('E3','2')
 
 -- (e)
-INSERT INTO Attendees
+INSERT INTO Event_Attendees
 VALUES('E2', 'Pedro')
-INSERT INTO Attendees
+INSERT INTO Event_Attendees
 VALUES('E1', 'Pedro')
-INSERT INTO Attendees
+INSERT INTO Event_Attendees
 VALUES('E1', 'PHil')
-INSERT INTO Attendees
+INSERT INTO Event_Attendees
 VALUES('E3', 'PHil')
 
 -- (f)
@@ -153,3 +153,26 @@ VALUES('1', 'Fun!', '1', 'Phil', 'E2', FALSE)
 -- (g) and (h) ADMINISTRATIVE
 
 -- #4
+-- (a)
+select pid, passwd
+from Person
+where pid = 'Pedro' and passwd = MD5('Pedro')
+
+-- (b) STALKING PEDRO FOR THE NEXT 7 DAYS
+-- HOW YOU DO THIS?
+
+-- (c)
+select M.cid
+from Membership as M, Student as S
+where M.sid = S.sid and S.sid = 'Pedro'
+
+-- (d)
+select E.eid, P.fname, P.lname, count(P.pid) as num
+from Event as E, Person as P, Event_Attendees as EA, Sponsors as S
+where P.pid = EA.pid and S.cid = '2'
+group by Event
+
+-- (e)
+select E.public, M.sid -- THIS SHOULD RETURN A BOOLEAN FOR THE PEDRO PART
+from Event as E, Membership as M, Club as C
+where E.eid = 'E3' or (M.sid = 'Pedro' and M.cid = C.cid)

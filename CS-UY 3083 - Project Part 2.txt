@@ -66,7 +66,7 @@ CREATE TABLE Comment (
 CREATE TABLE Membership (
 	sid VARCHAR(30) NOT NULL,
 	cid INT NOT NULL,
-	role ENUM('member','president','teasurer'), -- What are possible roles? There's 3
+	role ENUM('member','president','teasurer'),
 	PRIMARY KEY(sid, cid),
 	FOREIGN KEY(sid) REFERENCES Student(sid),
 	FOREIGN KEY(cid) REFERENCES Club(cid)
@@ -86,6 +86,22 @@ CREATE TABLE Event_Attendees (
 	PRIMARY KEY(pid, eid),
 	FOREIGN KEY(pid) REFERENCES Person(pid),
 	FOREIGN KEY(eid) REFERENCES Event(eid)
+);
+
+CREATE TABLE Interests (
+	pid VARCHAR(30) NOT NULL,
+	kid INT NOT NULL,
+	FOREIGN KEY(pid) REFERENCES Person(pid),
+	FOREIGN KEY(kid) REFERENCES Keyword(kid),
+	PRIMARY KEY(pid,kid)
+);
+
+CREATE TABLE Club_Topics (
+	cid INT NOT NULL,
+	kid INT NOT NULL
+	FOREIGN KEY(cid) REFERENCES Club(cid),
+	FOREIGN KEY(kid) REFERENCES Keyword(kid),
+	PRIMARY KEY(cid,kid)
 );
 
 
@@ -115,32 +131,32 @@ INSERT INTO Membership
 VALUES('Phil','1', president)
 
 -- (c)
--- How do you reprsent this relationship?
+INSERT INTO Club_About VALUES ('2', '1');
 
 -- (d)
 INSERT INTO Event
-VALUES('E1', 'Tossing Competition', 'Fun', 'March 30th, 2015', 'Central Park', TRUE)
+VALUES('1', 'Tossing Competition', 'Fun', 'March 30th, 2015', 'Central Park', TRUE)
 INSERT INTO Event
-VALUES('E2', 'Comedy', 'Fun', 'March 28th, 2015', 'NYU', FALSE)
+VALUES('2', 'Comedy', 'Fun', 'March 28th, 2015', 'NYU', FALSE)
 INSERT INTO Event
-VALUES('E3', 'Drama', 'Fun', 'March 20th, 2015', 'Princeton', TRUE)
+VALUES('3', 'Drama', 'Fun', 'March 20th, 2015', 'Princeton', TRUE)
 -- CHECK DATETIME SYNTAX
 INSERT INTO Sponsors
-VALUES('E1','1')
+VALUES('1','1')
 INSERT INTO Sponsors
-VALUES('E2','2')
+VALUES('2','2')
 INSERT INTO Sponsors
-VALUES('E3','2')
+VALUES('3','2')
 
 -- (e)
 INSERT INTO Event_Attendees
-VALUES('E2', 'Pedro')
+VALUES('2', 'Pedro')
 INSERT INTO Event_Attendees
-VALUES('E1', 'Pedro')
+VALUES('1', 'Pedro')
 INSERT INTO Event_Attendees
-VALUES('E1', 'PHil')
+VALUES('1', 'PHil')
 INSERT INTO Event_Attendees
-VALUES('E3', 'PHil')
+VALUES('3', 'PHil')
 
 -- (f)
 INSERT INTO Comment

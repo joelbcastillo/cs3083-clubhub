@@ -108,11 +108,10 @@ CREATE TABLE Club_Topics (
 -- #3 INSERT STATEMENTS
 
 -- (a)
-insert into Club
-values('1','Frisbee Club', 'Toss aerodynamics disks!', 'Ann');
-insert into Club
-values('2','Theater Club', 'Time to Perform!', 'Bob');
-
+INSERT INTO Club
+VALUES(1,'Frisbee Club', 'Toss aerodynamics disks!', 'Ann');
+INSERT INTO Club
+VALUES(2,'Theater Club', 'Time to Perform!', 'Bob');
 
 -- (b)
 INSERT INTO Person
@@ -124,49 +123,60 @@ VALUES ('Ann', md5('Ann'), 'Ann', 'Ann', 'Ann@email.com')
 INSERT INTO Person
 VALUES ('Bob', md5('Bob'), 'Bob', 'Bob', 'Bob@email.com')
 INSERT INTO Membership
-VALUES('Pedro','1', member)
+VALUES('Pedro',1, member)
 INSERT INTO Membership
-VALUES('Pedro','2', president)
+VALUES('Pedro',2, president)
 INSERT INTO Membership
-VALUES('Phil','1', president)
+VALUES('Phil',1, president)
 
 -- (c)
-INSERT INTO Club_About VALUES ('2', '1');
+INSERT INTO Keyword VALUES (1, 'Sports');
+INSERT INTO Keyword VALUES (2, 'Acting');
+INSERT INTO Keyword VALUES (3, 'Singing');
+
+INSERT INTO Club_Topics VALUES (2, 2);
+INSERT INTO Club_Topics VALUES (2, 3);
+INSERT INTO Club_Topics VALUES (1, 1);
+
+INSERT INTO Interests VALUES ((SELECT pid FROM Person WHERE name = 'Pedro'), 2);
+INSERT INTO Interests VALUES ((SELECT pid FROM Person WHERE name = 'Pedro'), 1);
+INSERT INTO Interests VALUES ((SELECT pid FROM Person WHERE name = 'Ann'), 3);
 
 -- (d)
 INSERT INTO Event
-VALUES('1', 'Tossing Competition', 'Fun', 'March 30th, 2015', 'Central Park', TRUE)
+VALUES(1, 'Tossing Competition', 'Fun', '2015-03-15 12:00:00', 'Central Park', TRUE)
 INSERT INTO Event
-VALUES('2', 'Comedy', 'Fun', 'March 28th, 2015', 'NYU', FALSE)
+VALUES(2, 'Comedy', 'Fun', '2015-03-28 19:00:00', 'NYU', FALSE)
 INSERT INTO Event
-VALUES('3', 'Drama', 'Fun', 'March 20th, 2015', 'Princeton', TRUE)
--- CHECK DATETIME SYNTAX
+VALUES(3, 'Drama', 'Fun', '2015-03-20 19:00:00', 'Princeton', TRUE)
 INSERT INTO Sponsors
-VALUES('1','1')
+VALUES(1,1)
 INSERT INTO Sponsors
-VALUES('2','2')
+VALUES(2,2)
 INSERT INTO Sponsors
-VALUES('3','2')
+VALUES(3,2)
 
 -- (e)
 INSERT INTO Event_Attendees
-VALUES('2', 'Pedro')
+VALUES(2, 'Pedro')
 INSERT INTO Event_Attendees
-VALUES('1', 'Pedro')
+VALUES(1, 'Pedro')
 INSERT INTO Event_Attendees
-VALUES('1', 'PHil')
+VALUES(1, 'PHil')
 INSERT INTO Event_Attendees
-VALUES('3', 'PHil')
+VALUES(3, 'PHil')
 
 -- (f)
 INSERT INTO Comment
-VALUES('1', 'Amazing Club', 'Pedro', '2', 'E2', FALSE)
+VALUES(1, 'Amazing Club', 'Pedro', 2, 'E2', FALSE)
 INSERT INTO Comment
-VALUES('2', 'Gets better!', 'Pedro', '2', 'E2', TRUE)
+VALUES(2, 'Gets better!', 'Pedro', 2, 'E2', TRUE)
 INSERT INTO Comment
-VALUES('1', 'Fun!', '1', 'Phil', 'E2', FALSE)
+VALUES(1, 'Fun!', 1, 'Phil', 'E2', FALSE)
 
 -- (g) and (h) ADMINISTRATIVE
+
+INSERT INTO Keyword VALUES (1)
 
 -- #4
 -- (a)
@@ -174,8 +184,8 @@ select pid, passwd
 from Person
 where pid = 'Pedro' and passwd = MD5('Pedro')
 
--- (b) STALKING PEDRO FOR THE NEXT 7 DAYS
--- HOW YOU DO THIS?
+-- (b)
+SELECT eid, title, datetime FROM Event, Event_Attendees, Person WHERE Event.eid = Event_Attendees.eid AND Event_Attendees.pid = Person.pid AND Person.name = 'Pedro' AND Event.datetime BETWEEN (CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY); 
 
 -- (c)
 select M.cid

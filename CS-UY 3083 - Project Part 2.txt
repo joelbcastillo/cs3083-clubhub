@@ -2,7 +2,7 @@
 -- Project - Part 2 - Schema for ClubHub
 -- Team Members
 -- 	Joel Castillo (jc5383)
---	Munieshwar (Kevin) Ramdass ()
+--	Munieshwar (Kevin) Ramdass (mr3420)
 
 
 CREATE TABLE Person (

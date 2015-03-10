@@ -1,5 +1,3 @@
-DROP SCHEMA clubhub;
-
 USE clubhub;
 
 CREATE TABLE Person (
@@ -32,32 +30,29 @@ CREATE TABLE Club (
 	FOREIGN KEY(aid) REFERENCES Advisor(aid)
 );
 
-CREATE TABLE Event (
+CREATE TABLE `Event` (
 	eid INT PRIMARY KEY NOT NULL,
 	ename VARCHAR(32),
 	description VARCHAR(512), 
 	datetime DATETIME,
 	location VARCHAR(512),
-	isPublic BOOLEAN DEFAULT FALSE
+	isPublic BOOLEAN
 );
 
 CREATE TABLE Keyword (
 	kid INT PRIMARY KEY NOT NULL,
 	topic VARCHAR(32)
 );
-
-DROP TABLE Comment;
 CREATE TABLE Comment (
-	comment_id INT PRIMARY KEY NOT NULL,
+	comment_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
 	comment VARCHAR(512),
 	pid VARCHAR(30),
 	cid INT,
 	eid INT,
-	public BOOLEAN DEFAULT FALSE,
+	isPublic BOOLEAN REFERENCES `Event`(isPublic),
 	FOREIGN KEY(pid) REFERENCES Person(pid),
 	FOREIGN KEY(cid) REFERENCES Club(cid),
-	FOREIGN KEY(eid) REFERENCES Event(eid),
-	FOREIGN KEY(public) REFERENCES Event(isPublic)
+	FOREIGN KEY(eid) REFERENCES `Event`(eid)
 );
 
 CREATE TABLE Membership (
@@ -73,16 +68,16 @@ CREATE TABLE Sponsors (
 	eid INT NOT NULL,
 	cid INT NOT NULL,
 	PRIMARY KEY(eid, cid),
-	FOREIGN KEY(eid) REFERENCES Event(eid),
+	FOREIGN KEY(eid) REFERENCES `Event`(eid),
 	FOREIGN KEY(cid) REFERENCES Comment(cid)
 );
 
 CREATE TABLE Event_Attendees (
 	pid VARCHAR(30) NOT NULL,
-	eid VARCHAR(30) NOT NULL,
-	PRIMARY KEY(pid, eid),
+	eid INT NOT NULL,
+	FOREIGN KEY(eid) REFERENCES `Event`(eid),
 	FOREIGN KEY(pid) REFERENCES Person(pid),
-	FOREIGN KEY(eid) REFERENCES Event(eid)
+	PRIMARY KEY(pid, eid)
 );
 
 CREATE TABLE Interests (
@@ -95,79 +90,61 @@ CREATE TABLE Interests (
 
 CREATE TABLE Club_Topics (
 	cid INT NOT NULL,
-	kid INT NOT NULL
+	kid INT NOT NULL,
 	FOREIGN KEY(cid) REFERENCES Club(cid),
 	FOREIGN KEY(kid) REFERENCES Keyword(kid),
 	PRIMARY KEY(cid,kid)
 );
 
+show WARNINGS ;
 
--- #3 INSERT STATEMENTS
 
-# -- (a)
-# INSERT INTO Club
-# VALUES(1,'Frisbee Club', 'Toss aerodynamics disks!', 'Ann');
-# INSERT INTO Club
-# VALUES(2,'Theater Club', 'Time to Perform!', 'Bob');
-# 
-# -- (b)
-# INSERT INTO Person
-# VALUES('Pedro', MD5('Pedro'), 'Pedro', 'Pedro', 'Pedro@email.com')
-# INSERT INTO Person
-# VALUES('Phil', MD5('Phil'), 'Phil', 'Phil', 'Pedro@email.com')
-# INSERT INTO Person
-# VALUES ('Ann', md5('Ann'), 'Ann', 'Ann', 'Ann@email.com')
-# INSERT INTO Person
-# VALUES ('Bob', md5('Bob'), 'Bob', 'Bob', 'Bob@email.com')
-# INSERT INTO Membership
-# VALUES('Pedro',1, member)
-# INSERT INTO Membership
-# VALUES('Pedro',2, president)
-# INSERT INTO Membership
-# VALUES('Phil',1, president)
-# 
-# -- (c)
-# INSERT INTO Keyword VALUES (1, 'Sports');
-# INSERT INTO Keyword VALUES (2, 'Acting');
-# INSERT INTO Keyword VALUES (3, 'Singing');
-# 
-# INSERT INTO Club_Topics VALUES (2, 2);
-# INSERT INTO Club_Topics VALUES (2, 3);
-# INSERT INTO Club_Topics VALUES (1, 1);
-# 
-# INSERT INTO Interests VALUES ((SELECT pid FROM Person WHERE name = 'Pedro'), 2);
-# INSERT INTO Interests VALUES ((SELECT pid FROM Person WHERE name = 'Pedro'), 1);
-# INSERT INTO Interests VALUES ((SELECT pid FROM Person WHERE name = 'Ann'), 3);
-# 
-# -- (d)
-# INSERT INTO Event
-# VALUES(1, 'Tossing Competition', 'Fun', '2015-03-15 12:00:00', 'Central Park', TRUE);
-# INSERT INTO Event
-# VALUES(2, 'Comedy', 'Fun', '2015-03-28 19:00:00', 'NYU', FALSE);
-# INSERT INTO Event
-# VALUES(3, 'Drama', 'Fun', '2015-03-20 19:00:00', 'Princeton', TRUE);
-# INSERT INTO Sponsors
-# VALUES(1,1);
-# INSERT INTO Sponsors
-# VALUES(2,2);
-# INSERT INTO Sponsors
-# VALUES(3,2);
-# 
-# -- (e)
-# INSERT INTO Event_Attendees
-# VALUES(2, 'Pedro');
-# INSERT INTO Event_Attendees
-# VALUES(1, 'Pedro');
-# INSERT INTO Event_Attendees
-# VALUES(1, 'PHil');
-# INSERT INTO Event_Attendees
-# VALUES(3, 'PHil');
-# 
-# -- (f)
-# INSERT INTO Comment VALUES(1, 'Amazing Club', 'Pedro', 2, 'E2', FALSE);
-# INSERT INTO Comment VALUES(2, 'Gets better!', 'Pedro', 2, 'E2', TRUE);
-# INSERT INTO Comment VALUES(1, 'Fun!', 1, 'Phil', 'E2', FALSE);
+#  3 INSERT STATEMENTS
 
+# (a)
+INSERT INTO Club VALUES(1,'Frisbee Club', 'Toss aerodynamics disks!', 'Ann');
+INSERT INTO Club VALUES(2,'Theater Club', 'Time to Perform!', 'Bob');
+
+# (b)
+INSERT INTO Person VALUES('Pedro', MD5('Pedro'), 'Pedro', 'Pedro', 'Pedro@email.com', 'Student');
+INSERT INTO Person VALUES('Phil', MD5('Phil'), 'Phil', 'Phil', 'Pedro@email.com', 'Student');
+INSERT INTO Person VALUES ('Ann', md5('Ann'), 'Ann', 'Ann', 'Ann@email.com', 'Student');
+INSERT INTO Person VALUES ('Bob', md5('Bob'), 'Bob', 'Bob', 'Bob@email.com', 'Student');
+INSERT INTO Membership VALUES('Pedro',1, 'Member');
+INSERT INTO Membership VALUES('Pedro',2, 'President');
+INSERT INTO Membership VALUES('Phil',1, 'President');
+
+# (c)
+INSERT INTO Keyword VALUES (1, 'Sports');
+INSERT INTO Keyword VALUES (2, 'Acting');
+INSERT INTO Keyword VALUES (3, 'Singing');
+
+INSERT INTO Club_Topics VALUES (2, 2);
+INSERT INTO Club_Topics VALUES (2, 3);
+INSERT INTO Club_Topics VALUES (1, 1);
+
+INSERT INTO Interests VALUES ((SELECT pid FROM Person WHERE person.fname = 'Pedro'), 2);
+INSERT INTO Interests VALUES ((SELECT pid FROM Person WHERE person.fname = 'Pedro'), 1);
+INSERT INTO Interests VALUES ((SELECT pid FROM Person WHERE person.fname = 'Ann'), 3);
+
+# (d)
+INSERT INTO Event VALUES(1, 'Tossing Competition', 'Fun', '2015-03-15 12:00:00', 'Central Park', TRUE);
+INSERT INTO Event VALUES(2, 'Comedy', 'Fun', '2015-03-28 19:00:00', 'NYU', FALSE);
+INSERT INTO Event VALUES(3, 'Drama', 'Fun', '2015-03-20 19:00:00', 'Princeton', TRUE);
+INSERT INTO Sponsors VALUES(1,1);
+INSERT INTO Sponsors VALUES(2,2);
+INSERT INTO Sponsors VALUES(3,2);
+
+# (e)
+INSERT INTO Event_Attendees VALUES('Pedro', 2);
+INSERT INTO Event_Attendees VALUES('Pedro', 1);
+INSERT INTO Event_Attendees VALUES('PHil', 1);
+INSERT INTO Event_Attendees VALUES('PHil', 3);
+
+# (f)
+INSERT INTO Comment (comment, pid, cid, eid, isPublic) VALUES ('Amazing Club', 'Pedro', 2, 2, FALSE);
+INSERT INTO Comment (comment, pid, cid, eid, isPublic) VALUES ('Gets better!', 'Pedro', 2, 2, TRUE);
+INSERT INTO Comment (comment, pid, cid, eid, isPublic) VALUES ('Fun!', 'Phil', 1, 2, FALSE);
 -- #4
 -- (a)
 select pid, passwd

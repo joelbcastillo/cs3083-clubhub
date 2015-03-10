@@ -1,4 +1,9 @@
-USE clubhub;
+-- CS3083 - Introduction to Databases
+-- Project - Part 2 - Schema for ClubHub
+-- Team Members
+-- 	Joel Castillo (jc5383)
+--	Munieshwar (Kevin) Ramdass ()
+
 
 CREATE TABLE Person (
 	pid VARCHAR(30) PRIMARY KEY NOT NULL,
@@ -99,13 +104,13 @@ CREATE TABLE Club_Topics (
 show WARNINGS ;
 
 
-#  3 INSERT STATEMENTS
+--  3 INSERT STATEMENTS
 
-# (a)
+-- (a)
 INSERT INTO Club VALUES(1,'Frisbee Club', 'Toss aerodynamics disks!', 'Ann');
 INSERT INTO Club VALUES(2,'Theater Club', 'Time to Perform!', 'Bob');
 
-# (b)
+-- (b)
 INSERT INTO Person VALUES('Pedro', MD5('Pedro'), 'Pedro', 'Pedro', 'Pedro@email.com', 'Student');
 INSERT INTO Person VALUES('Phil', MD5('Phil'), 'Phil', 'Phil', 'Pedro@email.com', 'Student');
 INSERT INTO Person VALUES ('Ann', md5('Ann'), 'Ann', 'Ann', 'Ann@email.com', 'Student');
@@ -114,7 +119,7 @@ INSERT INTO Membership VALUES('Pedro',1, 'Member');
 INSERT INTO Membership VALUES('Pedro',2, 'President');
 INSERT INTO Membership VALUES('Phil',1, 'President');
 
-# (c)
+-- (c)
 INSERT INTO Keyword VALUES (1, 'Sports');
 INSERT INTO Keyword VALUES (2, 'Acting');
 INSERT INTO Keyword VALUES (3, 'Singing');
@@ -127,7 +132,7 @@ INSERT INTO Interests VALUES ((SELECT pid FROM Person WHERE person.fname = 'Pedr
 INSERT INTO Interests VALUES ((SELECT pid FROM Person WHERE person.fname = 'Pedro'), 1);
 INSERT INTO Interests VALUES ((SELECT pid FROM Person WHERE person.fname = 'Ann'), 3);
 
-# (d)
+-- (d)
 INSERT INTO Event VALUES(1, 'Tossing Competition', 'Fun', '2015-03-15 12:00:00', 'Central Park', TRUE);
 INSERT INTO Event VALUES(2, 'Comedy', 'Fun', '2015-03-28 19:00:00', 'NYU', FALSE);
 INSERT INTO Event VALUES(3, 'Drama', 'Fun', '2015-03-20 19:00:00', 'Princeton', TRUE);
@@ -135,37 +140,37 @@ INSERT INTO Sponsors VALUES(1,1);
 INSERT INTO Sponsors VALUES(2,2);
 INSERT INTO Sponsors VALUES(3,2);
 
-# (e)
+-- (e)
 INSERT INTO Event_Attendees VALUES('Pedro', 2);
 INSERT INTO Event_Attendees VALUES('Pedro', 1);
 INSERT INTO Event_Attendees VALUES('PHil', 1);
 INSERT INTO Event_Attendees VALUES('PHil', 3);
 
-# (f)
+-- (f)
 INSERT INTO Comment (comment, pid, cid, eid, isPublic) VALUES ('Amazing Club', 'Pedro', 2, 2, FALSE);
 INSERT INTO Comment (comment, pid, cid, eid, isPublic) VALUES ('Gets better!', 'Pedro', 2, 2, TRUE);
 INSERT INTO Comment (comment, pid, cid, eid, isPublic) VALUES ('Fun!', 'Phil', 1, 2, FALSE);
-# 4
+-- 4
 
-# (a)
+-- (a)
 SELECT pid, pASswd FROM Person WHERE pid = 'Pedro' AND pASswd = MD5('Pedro');
 
-# (b)
+-- (b)
 SELECT eid, title, datetime FROM Event, Event_Attendees, Person WHERE Event.eid = Event_Attendees.eid AND Event_Attendees.pid = Person.pid AND Person.name = 'Pedro' AND Event.datetime BETWEEN (CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY);
 
-# (c)
+-- (c)
 SELECT M.cid
 FROM Membership AS M, Student AS S
 WHERE M.sid = S.sid AND S.sid = 'Pedro';
 
-# (d)
+-- (d)
 SELECT E.eid, P.fname, P.lname, count(P.pid) AS num FROM Event AS E, Person AS P, Event_Attendees AS EA, Sponsors AS S WHERE P.pid = EA.pid AND S.cid = '2' GROUP BY Event;
 
-# (e)
+-- (e)
 SELECT CASE WHEN exists (
     SELECT * FROM Event AS E, Membership AS M, Club AS C WHERE E.eid = '3'or (M.sid = 'Pedro' AND M.cid = C.cid)
 )  THEN cASt(1 AS bit) ELSE cASt(0 AS bit) end;
 
-# (f)
-# Our schema uses a sponsors table that will allow multiple clubs to sponsor an event. A simple query would allow us to search for an event ID and get all of the clubs that are in the sponsors table for it
-# Please see (e) for the query regarding Pedro
+-- (f)
+-- Our schema uses a sponsors table that will allow multiple clubs to sponsor an event. A simple query would allow us to search for an event ID and get all of the clubs that are in the sponsors table for it
+-- Please see (e) for the query regarding Pedro
